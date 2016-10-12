@@ -35,6 +35,8 @@ public class WebConfig extends WebMvcConfigurerAdapter {
         registry.addViewController("/anonymous.html");
         registry.addViewController("/console.html");
         registry.addViewController("/login.html");
+        registry.addViewController("/invalidSession.html");
+        registry.addViewController("/sessionExpired.html");
         registry.addViewController("/homepage.html");
     }
 
