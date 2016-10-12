@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/security" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:beans="http://www.springframework.org/schema/beans"
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/security 
+        http://www.springframework.org/schema/security/spring-security-4.0.xsd
+        http://www.springframework.org/schema/beans 
+        http://www.springframework.org/schema/beans/spring-beans-4.2.xsd"
+>
+
+    <http create-session="stateless" use-expressions="true">
+        <intercept-url pattern="/a" access="permitAll"/>
+        <intercept-url pattern="/**" access="isAuthenticated()"/>
+
+        <http-basic entry-point-ref="restAuthenticationEntryPoint"/>
+        <!--<http-basic/>-->
+
+    </http>
+
+    <authentication-manager>
+        <ldap-authentication-provider
+                server-ref="ldapLocal"
+                user-search-base="ou=people"
+                user-search-filter="(uid={0})"
+                group-search-base="ou=groups"
+                group-search-filter="(member={0})"
+        >
+        </ldap-authentication-provider>
+    </authentication-manager>
+
+    <ldap-server id="ldapLocal" root="dc=absurd,dc=com" ldif="users.ldif"/>
+
+    <global-method-security pre-post-annotations="enabled"/>
+
+</beans:beans>
