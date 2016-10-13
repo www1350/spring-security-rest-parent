@@ -13,15 +13,20 @@
     <http use-expressions="true">
         <intercept-url pattern="/anonymous*" access="isAnonymous()"/>
         <intercept-url pattern="/login*" access="permitAll"/>
+        <intercept-url pattern="/api/loginvaliad" access="permitAll"/>
         <intercept-url pattern="/**" access="isAuthenticated()"/>
 
         <csrf disabled="true"/>
-        <form-login login-page='/login.html' login-processing-url="/perform_login"
+<!--        <form-login login-page='/login.html'
                     authentication-success-handler-ref="myAuthenticationSuccessHandler"
                     authentication-failure-url="/login.html?error=true"
-                    always-use-default-target="true"/>
-
-        <logout logout-url="/perform_logout" delete-cookies="JSESSIONID" success-handler-ref="customLogoutSuccessHandler"/>
+                    always-use-default-target="true"/>-->
+                <form-login login-page='/login.html'
+                            login-processing-url="/api/loginvaliad"
+                            authentication-success-handler-ref="myAuthenticationSuccessHandler"
+                           authentication-failure-url="/login.html?error=true"
+                           always-use-default-target="true"/>
+        <logout delete-cookies="JSESSIONID" success-handler-ref="customLogoutSuccessHandler"/>
 
         <remember-me key="uniqueAndSecret" token-validity-seconds="86400"/>
         <!--<http-basic entry-point-ref="restAuthenticationEntryPoint"/>-->
@@ -29,6 +34,7 @@
         <session-management invalid-session-url="/invalidSession.html">
             <concurrency-control max-sessions="2" expired-url="/sessionExpired.html"/>
         </session-management>
+
     </http>
     <beans:bean name="customLogoutSuccessHandler" class="com.absurd.security.CustomLogoutSuccessHandler"/>
     <beans:bean id="myAuthenticationSuccessHandler" class="com.absurd.security.MySimpleUrlAuthenticationSuccessHandler"/>
@@ -50,12 +56,13 @@
         <beans:property name="createTableOnStartup" value="false"/>
         <beans:property name="dataSource" ref="dataSource"/>
     </beans:bean>
-    <beans:bean id="myUserDetailsService" class="com.absurd.service.MyUserDetailsService"/>
+
 
 
     <jdbc:embedded-database id="dataSource" type="H2">
         <jdbc:script location="classpath:/persisted_logins_create_table.sql"/>
     </jdbc:embedded-database>
 
+    <beans:bean id="myUserDetailsService" class="com.absurd.service.MyUserDetailsService"/>
 
 </beans:beans>
